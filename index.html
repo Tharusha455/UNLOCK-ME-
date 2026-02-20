@@ -338,7 +338,54 @@ specialMarker.on('click', function(e) {
         });
     }
 });
-
+// --- 4. Riddle Logic ---
+function checkRiddle() {
+    const inputEl = document.getElementById('riddle-input');
+    const input = inputEl.value.toLowerCase().trim();
+    const errorMsg = document.getElementById('riddle-error');
+    const feedback = document.getElementById('riddle-feedback');
+    
+    console.log("Checking riddle answer:", input); // Debug line
+    
+    // Valid answers: clock, watch, time
+    if (input === 'clock' || input === 'watch' || input === 'time') {
+        if (!state.riddleSolved) {
+            state.riddleSolved = true;
+            
+            // Show success
+            feedback.classList.remove('hidden');
+            inputEl.classList.add('border-green-400', 'bg-green-50', 'text-green-700');
+            inputEl.disabled = true; // Prevent further edits
+            
+            // Update status icon
+            const statusIcon = document.getElementById('status-2');
+            statusIcon.classList.replace('fa-lock', 'fa-unlock');
+            statusIcon.classList.add('text-green-400');
+            statusIcon.classList.remove('text-rose-300');
+            
+            // Hide error if visible
+            errorMsg.classList.add('hidden');
+            
+            // Check if all fragments complete
+            checkCompletion();
+            
+            // Visual feedback
+            inputEl.blur(); // Remove focus
+        }
+    } else {
+        // Show error
+        errorMsg.classList.remove('hidden');
+        inputEl.classList.add('shake', 'border-red-300');
+        
+        setTimeout(() => {
+            inputEl.classList.remove('shake', 'border-red-300');
+        }, 500);
+        
+        // Clear input for retry
+        inputEl.value = '';
+        inputEl.focus();
+    }
+}
 // Also allow clicking on the circle area
 circle.on('click', function(e) {
     L.DomEvent.stopPropagation(e);
@@ -501,5 +548,6 @@ document.head.appendChild(style);
 </body>
 
 </html>
+
 
 

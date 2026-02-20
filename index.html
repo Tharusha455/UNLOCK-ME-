@@ -285,56 +285,39 @@
         };
 
         // --- 3. Map Logic (Leaflet) ---
-        // IMPORTANT: CHANGE THESE COORDINATES TO YOUR SPECIAL LOCATION
-        // Default is set to Paris (Eiffel Tower) as a placeholder for romance
-        const specialLat = 48.8584; 
-        const specialLng = 2.2945;
-        const mapZoom = 13;
+// IMPORTANT: CHANGE THESE COORDINATES TO YOUR SPECIAL LOCATION
+// Coordinates for Kataragama, Sri Lanka
+const specialLat = 6.4135; 
+const specialLng = 81.3346;
+const mapZoom = 15;
 
-        const map = L.map('map', {
-            scrollWheelZoom: false // Prevent scrolling page when scrolling map
-        }).setView([specialLat, specialLng], mapZoom);
+const map = L.map('map', {
+    scrollWheelZoom: false // Prevent scrolling page when scrolling map
+}).setView([specialLat, specialLng], mapZoom);
 
-        L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
-            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
-            subdomains: 'abcd',
-            maxZoom: 20
-        }).addTo(map);
+L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
+    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
+    subdomains: 'abcd',
+    maxZoom: 20
+}).addTo(map);
 
-        // Add a custom marker for the "Special Location"
-        const heartIcon = L.divIcon({
-            html: '<i class="fa-solid fa-heart text-rose-500 text-3xl drop-shadow-lg animate-bounce"></i>',
-            className: 'bg-transparent',
-            iconSize: [30, 30],
-            iconAnchor: [15, 30]
-        });
+// Add a custom marker for the "Special Location"
+const heartIcon = L.divIcon({
+    html: '<i class="fa-solid fa-heart text-rose-500 text-3xl drop-shadow-lg animate-bounce"></i>',
+    className: 'bg-transparent',
+    iconSize: [30, 30],
+    iconAnchor: [15, 30]
+});
 
-        const specialMarker = L.marker([specialLat, specialLng], {icon: heartIcon}).addTo(map);
+const specialMarker = L.marker([specialLat, specialLng], {icon: heartIcon}).addTo(map);
 
-        // Add a circle around it to hint the area
-        L.circle([specialLat, specialLng], {
-            color: 'rgba(251, 113, 133, 0.3)',
-            fillColor: 'rgba(251, 113, 133, 0.1)',
-            fillOpacity: 0.5,
-            radius: 500
-        }).addTo(map);
-
-        // Map Interaction
-        specialMarker.on('click', () => {
-            if (!state.mapSolved) {
-                state.mapSolved = true;
-                document.getElementById('map-feedback').classList.remove('hidden');
-                document.getElementById('status-1').classList.replace('fa-lock', 'fa-unlock');
-                document.getElementById('status-1').classList.add('text-green-400');
-                checkCompletion();
-                
-                // Pan map slightly to center the popup feeling
-                map.flyTo([specialLat, specialLng], 15, {
-                    animate: true,
-                    duration: 1.5
-                });
-            }
-        });
+// Add a circle around it to hint the area
+L.circle([specialLat, specialLng], {
+    color: 'rgba(251, 113, 133, 0.3)',
+    fillColor: 'rgba(251, 113, 133, 0.1)',
+    fillOpacity: 0.5,
+    radius: 500
+}).addTo(map);
 
         // --- 4. Riddle Logic ---
         function checkRiddle() {
@@ -500,3 +483,4 @@
 </body>
 
 </html>
+

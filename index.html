@@ -284,15 +284,14 @@
             locketClicks: 0
         };
 
-        // --- 3. Map Logic (Leaflet) ---
-// IMPORTANT: CHANGE THESE COORDINATES TO YOUR SPECIAL LOCATION
+// --- 3. Map Logic (Leaflet) ---
 // Coordinates for Kataragama, Sri Lanka
 const specialLat = 6.4135; 
 const specialLng = 81.3346;
 const mapZoom = 15;
 
 const map = L.map('map', {
-    scrollWheelZoom: false // Prevent scrolling page when scrolling map
+    scrollWheelZoom: false
 }).setView([specialLat, specialLng], mapZoom);
 
 L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
@@ -303,45 +302,64 @@ L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
 
 // Add a custom marker for the "Special Location"
 const heartIcon = L.divIcon({
-    html: '<i class="fa-solid fa-heart text-rose-500 text-3xl drop-shadow-lg animate-bounce"></i>',
-    className: 'bg-transparent',
+    html: '<i class="fa-solid fa-heart text-rose-500 text-3xl drop-shadow-lg animate-bounce" style="cursor: pointer;"></i>',
+    className: 'custom-heart-marker',
     iconSize: [30, 30],
-    iconAnchor: [15, 30]
+    iconAnchor: [15, 30],
+    popupAnchor: [0, -30]
 });
 
-const specialMarker = L.marker([specialLat, specialLng], {icon: heartIcon}).addTo(map);
+const specialMarker = L.marker([specialLat, specialLng], {
+    icon: heartIcon,
+    interactive: true
+}).addTo(map);
 
 // Add a circle around it to hint the area
-L.circle([specialLat, specialLng], {
+const circle = L.circle([specialLat, specialLng], {
     color: 'rgba(251, 113, 133, 0.3)',
     fillColor: 'rgba(251, 113, 133, 0.1)',
     fillOpacity: 0.5,
     radius: 500
 }).addTo(map);
 
-        // --- 4. Riddle Logic ---
-        function checkRiddle() {
-            const input = document.getElementById('riddle-input').value.toLowerCase().trim();
-            const errorMsg = document.getElementById('riddle-error');
-            
-            // Answers: Clock, Watch, Time
-            if (input === 'clock' || input === 'watch' || input === 'time') {
-                if (!state.riddleSolved) {
-                    state.riddleSolved = true;
-                    document.getElementById('riddle-feedback').classList.remove('hidden');
-                    document.getElementById('riddle-input').classList.add('border-green-400', 'bg-green-50');
-                    document.getElementById('status-2').classList.replace('fa-lock', 'fa-unlock');
-                    document.getElementById('status-2').classList.add('text-green-400');
-                    errorMsg.classList.add('hidden');
-                    checkCompletion();
-                }
-            } else {
-                errorMsg.classList.remove('hidden');
-                const inputEl = document.getElementById('riddle-input');
-                inputEl.classList.add('shake');
-                setTimeout(() => inputEl.classList.remove('shake'), 500);
-            }
-        }
+// Map Interaction - Click on marker
+specialMarker.on('click', function(e) {
+    L.DomEvent.stopPropagation(e);
+    if (!state.mapSolved) {
+        state.mapSolved = true;
+        document.getElementById('map-feedback').classList.remove('hidden');
+        document.getElementById('status-1').classList.replace('fa-lock', 'fa-unlock');
+        document.getElementById('status-1').classList.add('text-green-400');
+        checkCompletion();
+        
+        map.flyTo([specialLat, specialLng], 16, {
+            animate: true,
+            duration: 1.5
+        });
+    }
+});
+
+// Also allow clicking on the circle area
+circle.on('click', function(e) {
+    L.DomEvent.stopPropagation(e);
+    specialMarker.fire('click');
+});
+
+// Add CSS for pointer events
+const style = document.createElement('style');
+style.textContent = `
+    .custom-heart-marker {
+        background: transparent;
+        border: none;
+    }
+    .custom-heart-marker i {
+        pointer-events: auto !important;
+    }
+    .leaflet-marker-icon {
+        pointer-events: auto !important;
+    }
+`;
+document.head.appendChild(style);
 
         // --- 5. Locket Logic ---
         function clickLocket() {
@@ -483,4 +501,5 @@ L.circle([specialLat, specialLng], {
 </body>
 
 </html>
+
 
